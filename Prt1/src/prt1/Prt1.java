@@ -3,11 +3,14 @@ package prt1;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Prt1 {
 
     public static Scanner leer = new Scanner(System.in);
+    public static int[][] matriz_m = null, matriz_a = null, matriz_b = null;
 
     public static void main(String[] args) {
 
@@ -32,7 +35,7 @@ public class Prt1 {
                     //ataque(); 
                     break;
                 case 4:
-                    //reporte(); 
+                    reporte();
                     break;
                 default:
                     leer_opcion = 0;
@@ -44,7 +47,7 @@ public class Prt1 {
 
     public static void encriptar() {
         byte menu_encriptar = 0;
-        int[][] matriz_m = null, matriz_a = null, matriz_b = null;
+
         do {
             System.out.println("===HOLA COMPA A LA ENCRIPTACION"
                     + "\n\t 1) Ingresar Mensaje"
@@ -64,7 +67,7 @@ public class Prt1 {
                     matriz_b = cargarMatriz();
                     break;
                 case 4:
-                    encriptarMensaje(matriz_m,matriz_a,matriz_b); 
+                    encriptarMensaje(matriz_m, matriz_a, matriz_b);
                     break;
                 default:
                     menu_encriptar = 0;
@@ -139,41 +142,79 @@ public class Prt1 {
                 }
                 System.out.println("");
             }
-            
-            return vector_ret; 
+
+            return vector_ret;
         } catch (Exception e) {
             System.out.println("Disculpe, algo malo paso y tenga mas detalles: ");
             System.out.println(e.getMessage());
         }
-        return null; 
+        return null;
     }
-    
-    public static void encriptarMensaje(int matriz_m[][], int matriz_a[][], int matriz_b[][]){
-        int matriz_ret[][] = new int[matriz_a.length][matriz_m[0].length]; 
+
+    public static void encriptarMensaje(int matriz_m[][], int matriz_a[][], int matriz_b[][]) {
+        int matriz_ret[][] = new int[matriz_a.length][matriz_m[0].length];
         //llevar a cabo la multiplicacion de cada uno// ya esta a*m  
-        for(int i=0; i<matriz_ret.length;i++){
-            for(int j=0; j<matriz_ret[0].length;j++){
-                int valor_resultado = 0; 
-                for(int z=0;z<matriz_m.length;z++){
-                    valor_resultado+=(matriz_a[i][z]*matriz_m[z][j]); 
+        for (int i = 0; i < matriz_ret.length; i++) {
+            for (int j = 0; j < matriz_ret[0].length; j++) {
+                int valor_resultado = 0;
+                for (int z = 0; z < matriz_m.length; z++) {
+                    valor_resultado += (matriz_a[i][z] * matriz_m[z][j]);
                 }
-                matriz_ret[i][j] = valor_resultado; 
+                matriz_ret[i][j] = valor_resultado;
             }
         }
-        
-        for(int i=0; i<matriz_ret.length;i++){
-            for(int j=0; j<matriz_ret[0].length;j++){
-                matriz_ret[i][j] += matriz_b[i][j]; 
+
+        for (int i = 0; i < matriz_ret.length; i++) {
+            for (int j = 0; j < matriz_ret[0].length; j++) {
+                matriz_ret[i][j] += matriz_b[i][j];
             }
         }
-        
+
         for (int i = 0; i < matriz_ret.length; i++) {
             for (int j = 0; j < matriz_ret[0].length; j++) {
                 System.out.print("|" + matriz_ret[i][j] + "|");
             }
         }
 
-        return; 
+        return;
     }
-    
+
+    public static void reporte() {
+
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("reporte.html");
+            pw = new PrintWriter(fichero);
+
+            pw.println("<!DOCTYPE html>\n"
+                    + "<html lang=\"en\">\n"
+                    + "<head>\n"
+                    + "    <meta charset=\"UTF-8\">\n"
+                    + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                    + "    <title>Document</title>\n"
+                    + "</head>\n"
+                    + "<body> Esta es mi tabla \n");
+
+            pw.println("<table style=\"width:100%\"");
+            for (int i = 0; i < matriz_m.length; i++) {
+                pw.println(" <tr>");
+                for (int j = 0; j < matriz_m[0].length; j++) {
+                    pw.println("<td>" + matriz_m[i][j] + "</td>");
+                }
+                pw.println("</tr>");
+            }
+            pw.println("</table>");
+
+            pw.println(" "
+                    + "    \n"
+                    + "</body>\n"
+                    + "</html>");
+
+            fichero.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
